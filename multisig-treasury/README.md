@@ -13,24 +13,39 @@
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [How It Works](#how-it-works)
-- [Features](#features)
-- [Contract API](#contract-api)
-- [Project Structure](#project-structure)
-- [Quickstart](#quickstart)
-- [Environment](#environment)
-- [Local Deployment](#local-deployment)
-- [Manual Multisig Flow on Anvil](#manual-multisig-flow-on-anvil)
-- [Test Coverage](#test-coverage)
-- [Tech Stack](#tech-stack)
-- [License](#license)
+- [MultiSig Treasury](#multisig-treasury)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [How It Works](#how-it-works)
+  - [Features](#features)
+  - [Contract API](#contract-api)
+    - [Core Functions](#core-functions)
+    - [View Functions](#view-functions)
+    - [Events](#events)
+  - [Project Structure](#project-structure)
+  - [Quickstart](#quickstart)
+  - [Environment](#environment)
+  - [Local Deployment](#local-deployment)
+  - [Manual Multisig Flow on Anvil](#manual-multisig-flow-on-anvil)
+    - [Example `.env`](#example-env)
+    - [Environment Variable Notes](#environment-variable-notes)
+    - [1. Load Environment Variables](#1-load-environment-variables)
+    - [2. Deploy the Treasury](#2-deploy-the-treasury)
+    - [3. Fund the Treasury With ETH](#3-fund-the-treasury-with-eth)
+    - [4. Submit a Transaction](#4-submit-a-transaction)
+    - [5. Confirm the Transaction](#5-confirm-the-transaction)
+    - [6. Execute the Transaction](#6-execute-the-transaction)
+    - [7. Verify Execution](#7-verify-execution)
+    - [8. Optional: Test Revoke Confirmation](#8-optional-test-revoke-confirmation)
+  - [Test Coverage](#test-coverage)
+  - [Tech Stack](#tech-stack)
+  - [License](#license)
 
 ## Overview
 
-`MultiSigTreasury` is a shared treasury wallet for teams, DAOs, or any group that should not rely on one private key to control funds.
+`MultiSigTreasury` is a shared treasury wallet for teams, DAOs, or any group that should not rely on a single private key to control funds.
 
-An owner can propose a transaction, other owners can confirm it, and the transaction can only be executed after the configured confirmation threshold is reached.
+One owner can submit a transaction, other owners can confirm it, and the transaction can only be executed after the required confirmation threshold is reached.
 
 ## How It Works
 
@@ -51,20 +66,20 @@ Threshold reached?
     +-- yes -> execute transaction
 ```
 
-Confirmations can be revoked before execution, giving owners a chance to change their mind if a transaction looks wrong.
+Confirmations can be revoked before execution, which gives owners a chance to reconsider if a transaction looks wrong.
 
 ## Features
 
 | Category | Details |
 | --- | --- |
-| Ownership | Multiple approved owners with duplicate and zero-address protection. |
-| Threshold | Configurable required confirmation count at deployment. |
-| Submissions | Owners can submit ETH transfers or arbitrary calldata transactions. |
-| Confirmations | Owners can confirm once and revoke before execution. |
-| Execution | Approved transactions execute through low-level `call`. |
-| Safety | Custom errors, owner-only modifiers, transaction existence checks, and double-execution prevention. |
-| Observability | Events for deposits, submissions, confirmations, revocations, and executions. |
-| Tooling | Built, tested, and deployed with Foundry. |
+| Ownership | Multiple approved owners with duplicate and zero-address protection |
+| Threshold | Configurable required confirmation count at deployment |
+| Submissions | Owners can submit ETH transfers or arbitrary calldata transactions |
+| Confirmations | Owners can confirm once and revoke before execution |
+| Execution | Approved transactions execute through low-level `call` |
+| Safety | Custom errors, owner-only modifiers, transaction existence checks, and double-execution prevention |
+| Observability | Events for deposits, submissions, confirmations, revocations, and executions |
+| Tooling | Built, tested, and deployed with Foundry |
 
 ## Contract API
 
@@ -72,28 +87,28 @@ Confirmations can be revoked before execution, giving owners a chance to change 
 
 | Function | Access | Description |
 | --- | --- | --- |
-| `submitTransaction(address to, uint256 value, bytes data)` | Owner | Creates a pending treasury transaction. |
-| `confirmTransaction(uint256 txIndex)` | Owner | Adds the caller's confirmation to a pending transaction. |
-| `revokeConfirmation(uint256 txIndex)` | Owner | Removes the caller's confirmation before execution. |
-| `executeTransaction(uint256 txIndex)` | Owner | Executes a confirmed transaction. |
+| `submitTransaction(address to, uint256 value, bytes data)` | Owner | Creates a pending treasury transaction |
+| `confirmTransaction(uint256 txIndex)` | Owner | Adds the caller’s confirmation to a pending transaction |
+| `revokeConfirmation(uint256 txIndex)` | Owner | Removes the caller’s confirmation before execution |
+| `executeTransaction(uint256 txIndex)` | Owner | Executes a confirmed transaction |
 
 ### View Functions
 
 | Function | Description |
 | --- | --- |
-| `getOwners()` | Returns all treasury owners. |
-| `getTransactionCount()` | Returns the total number of submitted transactions. |
-| `getTransaction(uint256 txIndex)` | Returns transaction target, value, data, execution status, and confirmation count. |
+| `getOwners()` | Returns all treasury owners |
+| `getTransactionCount()` | Returns the total number of submitted transactions |
+| `getTransaction(uint256 txIndex)` | Returns transaction target, value, data, execution status, and confirmation count |
 
 ### Events
 
 | Event | Emitted When |
 | --- | --- |
-| `Deposit` | ETH is sent to the treasury. |
-| `TransactionSubmitted` | An owner submits a transaction. |
-| `TransactionConfirmed` | An owner confirms a transaction. |
-| `ConfirmationRevoked` | An owner revokes a confirmation. |
-| `TransactionExecuted` | A confirmed transaction is executed. |
+| `Deposit` | ETH is sent to the treasury |
+| `TransactionSubmitted` | An owner submits a transaction |
+| `TransactionConfirmed` | An owner confirms a transaction |
+| `ConfirmationRevoked` | An owner revokes a confirmation |
+| `TransactionExecuted` | A confirmed transaction is executed |
 
 ## Project Structure
 
@@ -110,7 +125,7 @@ multisig-treasury/
 
 ## Quickstart
 
-Clone the repository, then move into this project:
+Move into the project:
 
 ```bash
 cd multisig-treasury
@@ -128,13 +143,13 @@ Build the contracts:
 forge build
 ```
 
-Run the test suite:
+Run the full test suite:
 
 ```bash
 forge test
 ```
 
-Run the multisig tests only:
+Run only the multisig tests:
 
 ```bash
 forge test --match-path test/MultiSigTreasury.t.sol
@@ -154,7 +169,7 @@ Create a `.env` file in `multisig-treasury`:
 touch .env
 ```
 
-Add deployment values:
+Minimum deployment values:
 
 ```env
 PRIVATE_KEY=0xYOUR_PRIVATE_KEY
@@ -172,7 +187,7 @@ Start Anvil in a separate terminal:
 anvil
 ```
 
-Load your environment variables:
+Load environment variables:
 
 ```bash
 set -a
@@ -194,7 +209,7 @@ This project can be tested manually on a local Anvil node using three owner acco
 
 ### Example `.env`
 
-Create a `.env` file in the `multisig-treasury` directory and add real Anvil addresses and private keys:
+For manual interaction, add real Anvil addresses and private keys:
 
 ```env
 PRIVATE_KEY=0xDEPLOYER_PRIVATE_KEY
@@ -211,15 +226,15 @@ REQUIRED_CONFIRMATIONS=2
 RPC_URL=http://127.0.0.1:8545
 ```
 
-Environment variable notes:
+### Environment Variable Notes
 
 | Variable | Purpose |
 | --- | --- |
-| `PRIVATE_KEY` | Used to deploy the contract. |
-| `OWNER_1`, `OWNER_2`, `OWNER_3` | Multisig owner addresses. |
-| `OWNER_1_PK`, `OWNER_2_PK`, `OWNER_3_PK` | Private keys used to manually interact as each owner. |
-| `REQUIRED_CONFIRMATIONS` | Number of owner confirmations required before execution. |
-| `RPC_URL` | Local Anvil RPC endpoint. |
+| `PRIVATE_KEY` | Used to deploy the contract |
+| `OWNER_1`, `OWNER_2`, `OWNER_3` | Multisig owner addresses |
+| `OWNER_1_PK`, `OWNER_2_PK`, `OWNER_3_PK` | Private keys used to manually interact as each owner |
+| `REQUIRED_CONFIRMATIONS` | Number of owner confirmations required before execution |
+| `RPC_URL` | Local Anvil RPC endpoint |
 
 ### 1. Load Environment Variables
 
@@ -245,7 +260,7 @@ export TREASURY=0xYOUR_DEPLOYED_TREASURY_ADDRESS
 
 ### 3. Fund the Treasury With ETH
 
-The contract has a `receive()` function, so it can accept ETH directly.
+The contract includes a `receive()` function, so it can accept ETH directly.
 
 Fund it with `5 ETH` from owner 1:
 
@@ -282,9 +297,9 @@ cast send $TREASURY \
 
 Notes:
 
-- `1000000000000000000` is `1 ETH` in wei.
-- `0x` means empty calldata.
-- The first submitted transaction will have index `0`.
+- `1000000000000000000` is `1 ETH` in wei
+- `0x` means empty calldata
+- the first submitted transaction has index `0`
 
 Check how many transactions exist:
 
@@ -432,25 +447,24 @@ numConfirmations = 0
 
 The current suite covers:
 
-- Valid owner and threshold setup
-- Empty owner list rejection
-- Zero confirmation threshold rejection
-- Threshold greater than owner count rejection
-- Zero-address owner rejection
-- Duplicate owner rejection
-- Owner-only transaction submission
-- Owner-only confirmation and execution
-- Confirmation revocation
-- Duplicate confirmation prevention
-- Execution blocked before enough confirmations
-- Execution blocked after a transaction has already run
-- Missing transaction checks for confirm, revoke, and execute flows
+- valid owner and threshold setup
+- empty owner list rejection
+- zero confirmation threshold rejection
+- threshold greater than owner count rejection
+- zero-address owner rejection
+- duplicate owner rejection
+- owner-only transaction submission
+- owner-only confirmation and execution
+- confirmation revocation
+- duplicate confirmation prevention
+- execution blocked before enough confirmations
+- execution blocked after a transaction has already run
+- missing transaction checks for confirm, revoke, and execute flows
 
 Current result:
 
 ```text
-Ran 19 tests for test/MultiSigTreasury.t.sol:MultiSigTreasuryTest
-Suite result: ok. 19 passed; 0 failed; 0 skipped
+19 tests passing in MultiSigTreasury.t.sol
 ```
 
 ## Tech Stack
