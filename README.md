@@ -4,7 +4,7 @@ A portfolio repository containing multiple Solidity projects built with Foundry,
 
 ## Projects
 
-### Crowdfunding
+### [Crowdfunding](./crowdfunding)
 An ETH crowdfunding project with contribution tracking, creator withdrawals, and contributor refunds if the funding goal is not reached.
 
 **Highlights:**
@@ -15,7 +15,7 @@ An ETH crowdfunding project with contribution tracking, creator withdrawals, and
 - custom errors
 - Foundry tests and deployment script
 
-### Token Staking System
+### [Token Staking System](./token-staking)
 A capped ERC20 token paired with a staking contract that lets users stake tokens, earn rewards over time, claim rewards, and unstake.
 
 **Highlights:**
@@ -26,7 +26,7 @@ A capped ERC20 token paired with a staking contract that lets users stake tokens
 - time-based reward logic
 - Foundry tests and deployment scripts
 
-### MultiSig Treasury
+### [MultiSig Treasury](./multisig-treasury)
 A multi-owner treasury wallet that requires a configurable number of confirmations before transactions can be executed.
 
 **Highlights:**
@@ -44,23 +44,27 @@ Solidity-Foundry-Showcase/
 ├── crowdfunding/
 ├── token-staking/
 └── multisig-treasury/
+```
 
 ## Tech Stack
-* Solidity
-* Foundry
-* Forge
-* Cast
-* Anvil
-* OpenZeppelin
+
+- Solidity
+- Foundry
+- Forge
+- Cast
+- Anvil
+- OpenZeppelin
 
 ## Purpose
+
 This repository is part of my Solidity portfolio and is designed to demonstrate:
 
-* smart contract fundamentals
-* secure contract patterns
-* testing with Foundry
-* deployment scripting
-* practical on-chain workflows
+- smart contract fundamentals
+- secure contract patterns
+- testing with Foundry
+- deployment scripting
+- practical on-chain workflows
 
 ## License
+
 MIT
